@@ -1,0 +1,177 @@
+body{
+    margin: 0;
+    display: flex;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+button
+{
+    background-color: #263238;
+    color: white;
+    border: 2px solid #263238;
+    display: flex;
+    justify-content: center;
+    height: 35px;
+    font-weight: bold;
+    border-radius: 3px;
+    width: 80%;
+    transition: 0.2s;
+}
+
+button:hover
+{
+    background-color: transparent;
+    border: 2px solid #263238;
+    color: #263238;
+    cursor: pointer;
+}
+
+#left{
+    position: fixed;
+    background-color: #f5f5f5;
+    border-right: solid 1px #c2c2c2;
+    width: 10%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    #title
+    {
+        display: flex;
+        font-weight: bolder;
+        font-size: 20px;
+        justify-content: center;
+        align-items: flex-start;
+        height: 175px;
+    }
+    
+    
+}
+
+#right{
+    margin-left: 160px;
+    width: 90%;
+    background-color: white;
+    height: 100vh;
+
+    .template-clone
+    {
+        width: 60%;
+        padding: 20px;
+        font-family: arial,sans-serif;
+        display: none;
+
+        .template-health
+        {
+            margin-left: auto;
+            width: 200px;
+            background-color: rgb(0, 153, 51);
+            height: 5px;
+            position: relative;
+            visibility: hidden;
+        }
+
+        #title
+        {
+            cursor: pointer;
+            color: #1a0dab;
+        }
+        #link
+        {
+            color: #006621;
+        }
+        #date
+        {
+            color: #808080;
+        }
+        #description
+        {
+            display: inline;
+            color: #545454;
+        }
+    }
+}
+
+
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    padding-top: 100px;
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 50%;
+        .close {
+            color: #aaaaaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #form{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            input
+            {
+                width: 80%;
+                height: 35px;
+                margin: 20px;
+            }
+            button
+            {
+                margin: 20px;
+                width: 80%; 
+            }
+        }
+    }
+}
+
+.zergaling-wrap
+{
+    position: absolute;
+    display: inline-flex;
+    flex-direction: column;
+    user-select: none;
+    .zergaling-health
+    {
+        margin-left: auto;
+        width: 20px;
+        background-color: rgb(0, 153, 51);
+        height: 5px;
+        position: relative;
+        top:10px;
+    }
+    .zergaling-body
+    {
+        font-size: 25px;
+        text-align: center;
+        color:red;
+    }
+    .zergaling-body:hover
+    {
+        cursor: crosshair;
+    }
+}
+
+
+
+
+
