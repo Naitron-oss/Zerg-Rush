@@ -1,3 +1,5 @@
+var isDoneRushing = true;
+
 $.fn.closestToOffset = function(top,left) {
     var el = null,elOffset,x = left,y = top,distance,dx,dy,minDistance,arr,tempX,tempY;
     this.each(function() {
@@ -33,13 +35,48 @@ $.fn.closestToOffset = function(top,left) {
 var zergalings = [];
 var targets = [];
 
+function initZergalings(){
+    zergalings = [];
+    var tops = [0, $(window).height()];
+    for (var i = 0; i < 5; i++) {
+        var top = tops[Math.floor((Math.random() * 2))];
+        var left = Math.floor((Math.random() * $(window).width()-200));
+
+        var temp = $(".zergaling-wrap-clone").clone();
+        temp.attr("class","zergaling-wrap");
+        temp.css("top",top+"px");
+        temp.css("left",left+"px");
+        $("#right").append(temp);
+        zergalings.push(temp);
+    }
+}
+
 function startRush(){
     targets = $(".template-clone");
-    zergalings = $(".zergaling-wrap");
+    isDoneRushing = false;
+    doRush();
+}
+
+function doRush(){
+    initZergalings();
+    checkClosest();
+    
+    var rush = setInterval(function(){
+        if(isDoneRushing==false){
+            initZergalings();
+            checkClosest();
+        }
+        else{
+            clearInterval(rush);
+        }
+    },5000);
+}
+
+function checkClosest(){
     for (var i = 0; i < zergalings.length; i++) {
-        var closest = targets.closestToOffset(zergalings[i].offsetTop,zergalings[i].offsetLeft);
+        var closest = targets.closestToOffset(zergalings[i].offset().top,zergalings[i].offset().left);
         closest[0].css('background-color','#eee');
-        doTimer(zergalings.eq(i),closest[1],closest[2],closest[0])
+        doTimer(zergalings[i],closest[1],closest[2],closest[0])
     }
 }
 
@@ -48,8 +85,7 @@ function doTimer(obj,x,y,closest){
     var timer = setInterval (function () {
         var temp = obj;
         var top=1,left=1;
-        if(x!=0 && y!=0)
-        {
+        if(x!=0 && y!=0){
             top = y/(x+y);
             left = x/(x+y);
         }
@@ -58,19 +94,16 @@ function doTimer(obj,x,y,closest){
         if(y<0)
             top*=-1;
 
-        if(!(y<1&&y>-1) && !(x<1&&x>-1))
-        {
+        if(!(y<1&&y>-1) && !(x<1&&x>-1)){
             temp.offset({top: temp.offset().top + top, left: temp.offset().left + left});
             x+=-left;
             y+=-top;
         }
-        else if(!(x<1&&x>-1))
-        {
+        else if(!(x<1&&x>-1)){
             temp.css( 'left', temp.offset().left + left + "px");
             x+=-left;
         }
-        else if(!(y<1&&y>-1))
-        {
+        else if(!(y<1&&y>-1)){
             temp.css( 'top', temp.offset().top + top + "px");
             y+=-top;
         }
@@ -78,7 +111,6 @@ function doTimer(obj,x,y,closest){
         if ((y<1&&y>-1) && (x<1&&x>-1)){
             clearInterval(timer);
             zergHit(closest,temp); 
-            
         }     
     }, 20);
 }
@@ -86,7 +118,6 @@ function doTimer(obj,x,y,closest){
 function zergHit(obj,zerg){
     var health = obj.children().eq(0);
     health.css("visibility","visible");
-
 
     var hitter = setInterval(function(){
         health.attr("health",health.attr("health")-1);
@@ -101,16 +132,15 @@ function zergHit(obj,zerg){
                     break;
                 }    
             }
-            if(targets.length!=0)
-            {
+            if(targets.length!=0){
                 var closest = targets.closestToOffset(zerg.offset().top,zerg.offset().left);
                 closest[0].css('background-color','#eee');
                 doTimer(zerg,closest[1],closest[2],closest[0]);
             }
-            else
-            {
-                //todo validasi kelar
+            else{
+                //TODO validasi kelar
                 console.log("done");
+                isDoneRushing = true;
             }
              
         }
@@ -121,15 +151,14 @@ function zergHit(obj,zerg){
             $(obj).children().eq(0).css("background-color","orange");
         }
 
-        if(zerg.css("display")=="none")
-        {
+        if(zerg.css("display")=="none"){
             clearInterval(hitter);
         }
     },10);
 }
 
 $(document).ready(function(){
-    $(".zergaling-wrap").click(function(){
+    $(document).on("click",".zergaling-wrap", function(){
         $(this).attr("health",$(this).attr("health")-34);
         if($(this).attr("health")<0){
             $(this).fadeOut();
