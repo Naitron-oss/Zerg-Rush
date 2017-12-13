@@ -61,7 +61,8 @@ function clearRight(){
     $("#right").slideUp(function(){
         $("#right").html("");
         $("#right").show();
-    });   
+	});   
+	targets = [];
 }
 
 function generateDiv(){
@@ -82,7 +83,6 @@ function addRandomDiv(){
 }
 
 function addDiv(title, link, description, date = null){
-	
 	
     var template = $("#template").clone();
     template.attr("id",count);
@@ -198,7 +198,6 @@ Zergaling.prototype = {
 		var x = this.neighbor[0], y = this.neighbor[1];
        	var me = this;
 
-
 		var timer = setInterval(function(){
 			var isAda = false;
 			for(var i=0;i<targets.length;i++){
@@ -304,7 +303,7 @@ Zergaling.prototype = {
 }
 
 function startRush(){
-
+	$("#left").animate({width:'toggle'},350);
 	var tops = [0, $(document).height()];
 
 	for (var i = 0;i<5;i++) {
@@ -334,6 +333,9 @@ function startRush(){
 
     var timer = setInterval(function(){    
 		for (var i = 0;i<5;i++) {
+			if(targets.length==0){
+				clearInterval(timer);
+			}
 			var top = tops[Math.floor((Math.random() * 2))];
 			var left = Math.floor((Math.random() * 1000) + 1);
 			
@@ -348,7 +350,10 @@ function startRush(){
 			zerg = new Zergaling(id,left,top,temp);
 			id++;
 			zergalings.push(zerg);
-			zerg.walk();
+			if(targets.length!=0){
+				zerg.walk();
+			}
+			
 
 			if(zergalings.length==25){
 				clearInterval(timer);
@@ -359,23 +364,37 @@ function startRush(){
 	var game = setInterval(function(){
 		if(zergalings.length>0 && targets.length==0){
 			clearInterval(game);
-			console.log("Zerg Wins");
+			for(var i=0;i<zergalings.length;i++){
+				zergalings[i].element.fadeOut();
+				zergalings[i].element.remove();   
+			}
+			zergalings = [];
+			targets = [];
+			clearRight();
+			$("#left").animate({width:'toggle'},350);
 		}
 		else if(targets.length>0 && zergalings.length==0){
 			clearInterval(game);
-			console.log("Player Wins");
+			for(var i=0;i<targets.length;i++){
+				targets[i].element.fadeOut();   
+			}
+			zergalings = [];
+			targets = [];
+			clearRight();
+			$("#left").animate({width:'toggle'},350);
 		}
 		else if(targets.length==0 && zergalings.length==0){
 			clearInterval(game);
-			console.log("draw!");
+			zergalings = [];
+			targets = [];
+			clearRight();
+			$("#left").animate({width:'toggle'},350);
 		}
 	},17);
 }
 
 $(document).ready(function(){
 	
-
-
     $(document).on("click",".zergaling-wrap", function(){
 		var zerg = null;
 
@@ -388,7 +407,8 @@ $(document).ready(function(){
         zerg.health -= 34;
 
         if(zerg.health<0){
-			zerg.element.hide();
+			zerg.element.fadeOut();
+			zergalings[i].element.remove(); 
 			for(var i=0;i<zergalings.length;i++){
 				if(zergalings[i].id==$(this).attr("zerg-id")){
 					zergalings.splice(i,1);
