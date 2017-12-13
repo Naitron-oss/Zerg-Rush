@@ -153,6 +153,7 @@ button:hover
     user-select: none;
     .zergaling-health
     {
+        visibility: hidden;
         margin-left: auto;
         width: 20px;
         background-color: rgb(0, 153, 51);
@@ -166,9 +167,12 @@ button:hover
         text-align: center;
         color:red;
     }
-    .zergaling-body:hover
+}
+.zergaling-wrap:hover{
+    cursor: crosshair;
+    .zergaling-health
     {
-        cursor: crosshair;
+        visibility: visible;
     }
 }
 

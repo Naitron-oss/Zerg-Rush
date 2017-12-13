@@ -429,7 +429,6 @@ $(document).ready(function(){
 	
     $(document).on("click",".zergaling-wrap", function(){
 		var zerg = null;
-
 		for(var i=0;i<zergalings.length;i++){
             if(zergalings[i].id==$(this).attr("zerg-id")){
 				zerg = zergalings[i];

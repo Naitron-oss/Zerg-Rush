@@ -147,6 +147,7 @@ button:hover {
 }
 
 .zergaling-wrap .zergaling-health {
+  visibility: hidden;
   margin-left: auto;
   width: 20px;
   background-color: #009933;
@@ -161,8 +162,12 @@ button:hover {
   color: red;
 }
 
-.zergaling-wrap .zergaling-body:hover {
+.zergaling-wrap:hover {
   cursor: crosshair;
+}
+
+.zergaling-wrap:hover .zergaling-health {
+  visibility: visible;
 }
 
 .zergaling-wrap-clone {
