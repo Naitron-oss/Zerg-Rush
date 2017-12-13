@@ -265,6 +265,9 @@ Zergaling.prototype = {
 	    target.element.children().eq(0).css("visibility","visible");
 	    var me = this;
 	    var timer = setInterval(function(){
+			if(me.health<=0){
+				clearInterval(timer);
+	        }
 	    	target.health -= 1;
 	        target.element.children().eq(0).css("width",(target.health*2+"px"));
 	        
@@ -294,16 +297,18 @@ Zergaling.prototype = {
 	            target.element.children().eq(0).css("background-color","orange");
 	        }
 
-	        if(me.health==0){
-				clearInterval(timer);
-	        }
+	        
 	    },100)
 
 	},
 }
 
 function startRush(){
-	$("#left").animate({width:'toggle'},350);
+	$("button").fadeOut();
+	$("#title").fadeOut(function(){
+		$("#left").animate({width:'toggle'},500);
+	});
+
 	var tops = [0, $(document).height()];
 
 	for (var i = 0;i<5;i++) {
@@ -331,33 +336,37 @@ function startRush(){
 		zerg.walk();
 	}
 
-    var timer = setInterval(function(){    
-		for (var i = 0;i<5;i++) {
-			if(targets.length==0){
-				clearInterval(timer);
-			}
-			var top = tops[Math.floor((Math.random() * 2))];
-			var left = Math.floor((Math.random() * 1000) + 1);
-			
-			var temp = $(".zergaling-wrap-clone").clone();
-			temp.attr("class","zergaling-wrap");
-			temp.attr("zerg-id",id);
+    var timer = setInterval(function(){
+		if(targets.length!=0){    
+			for (var i = 0;i<5;i++) {
+				if(targets.length==0){
+					clearInterval(timer);
+				}
+				var top = tops[Math.floor((Math.random() * 2))];
+				var left = Math.floor((Math.random() * 1000) + 1);
+				
+				var temp = $(".zergaling-wrap-clone").clone();
+				temp.attr("class","zergaling-wrap");
+				temp.attr("zerg-id",id);
 
-			temp.css("top",top+"px");
-			temp.css("left",left+"px");
+				temp.css("top",top+"px");
+				temp.css("left",left+"px");
 
-			$("#right").append(temp);
-			zerg = new Zergaling(id,left,top,temp);
-			id++;
-			zergalings.push(zerg);
-			if(targets.length!=0){
-				zerg.walk();
+				$("#right").append(temp);
+				zerg = new Zergaling(id,left,top,temp);
+				id++;
+				zergalings.push(zerg);
+				if(targets.length!=0){
+					zerg.walk();
+				}
+				
+				if(zergalings.length==25){
+					clearInterval(timer);
+				}
 			}
-			
-
-			if(zergalings.length==25){
-				clearInterval(timer);
-			}
+		}
+		else{
+			clearInterval(timer);
 		}
 	},5000);
 
@@ -371,7 +380,12 @@ function startRush(){
 			zergalings = [];
 			targets = [];
 			clearRight();
-			$("#left").animate({width:'toggle'},350);
+			$("#left").animate({width:'toggle'},500,function(){
+				$("#left").css("display","flex");
+				$("#title").fadeIn();
+				$("#title").css("display","flex");
+				$("button").css("display","flex");
+			});
 		}
 		else if(targets.length>0 && zergalings.length==0){
 			clearInterval(game);
@@ -381,19 +395,37 @@ function startRush(){
 			zergalings = [];
 			targets = [];
 			clearRight();
-			$("#left").animate({width:'toggle'},350);
+			$("#left").animate({width:'toggle'},500,function(){
+				$("#left").css("display","flex");
+				$("#title").fadeIn();
+				$("#title").css("display","flex");
+				$("button").css("display","flex");
+			});
 		}
 		else if(targets.length==0 && zergalings.length==0){
 			clearInterval(game);
 			zergalings = [];
 			targets = [];
 			clearRight();
-			$("#left").animate({width:'toggle'},350);
+			$("#left").animate({width:'toggle'},500,function(){
+				$("#left").css("display","flex");
+				$("#title").fadeIn();
+				$("#title").css("display","flex");
+				$("button").css("display","flex");
+			});
 		}
 	},17);
 }
 
 $(document).ready(function(){
+
+	
+	$("#left").animate({width:'toggle'},500,function(){
+		$("#left").css("display","flex");
+		$("#title").fadeIn();
+		$("#title").css("display","flex");
+		$("button").css("display","flex");
+	});
 	
     $(document).on("click",".zergaling-wrap", function(){
 		var zerg = null;
