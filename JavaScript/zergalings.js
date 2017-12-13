@@ -37,10 +37,10 @@ var targets = [];
 
 function initZergalings(){
     zergalings = [];
-    var tops = [0, $(window).height()];
+    var tops = [0, $(document).height()];
     for (var i = 0; i < 5; i++) {
         var top = tops[Math.floor((Math.random() * 2))];
-        var left = Math.floor((Math.random() * $(window).width()-200));
+        var left = Math.floor((Math.random() * $(document).width()-200));
 
         var temp = $(".zergaling-wrap-clone").clone();
         temp.attr("class","zergaling-wrap");
@@ -52,6 +52,7 @@ function initZergalings(){
 }
 
 function startRush(){
+    $("#left").fadeOut();
     targets = $(".template-clone");
     isDoneRushing = false;
     doRush();
@@ -60,31 +61,52 @@ function startRush(){
 function doRush(){
     initZergalings();
     checkClosest();
+
+    var count = 0;
     
     var rush = setInterval(function(){
+        // console.log("doRush still running");
         if(isDoneRushing==false){
             initZergalings();
             checkClosest();
+            count++;
         }
-        else{
+        if(count==4)
             clearInterval(rush);
-        }
     },5000);
 }
 
 function checkClosest(){
-    for (var i = 0; i < zergalings.length; i++) {
-        var closest = targets.closestToOffset(zergalings[i].offset().top,zergalings[i].offset().left);
-        closest[0].css('background-color','#eee');
-        doTimer(zergalings[i],closest[1],closest[2],closest[0])
+    if(zergalings.length!=0){
+        for (var i = 0; i < zergalings.length; i++) {
+            var closest = targets.closestToOffset(zergalings[i].offset().top,zergalings[i].offset().left);
+            closest[0].css('background-color','#eee');
+            walk(zergalings[i],closest[1],closest[2],closest[0])
+        }
+    }
+    else{
+        isDoneRushing = true;
+        
     }
 }
 
-function doTimer(obj,x,y,closest){
-    
+function walk(obj,x,y,closest){
+
+    // var ada = false;
+    // for(var i=0;i<targets.length;i++){
+    //     if(targets.eq(i).attr("id")==closest.attr("id")){
+    //         ada = true;
+    //     }    
+    // }
+    // if (ada == false){
+    //     clearInterval(timer);
+    //     checkClosest();
+    // }
+
     var timer = setInterval (function () {
         var temp = obj;
         var top=1,left=1;
+
         if(x!=0 && y!=0){
             top = y/(x+y);
             left = x/(x+y);
@@ -95,7 +117,7 @@ function doTimer(obj,x,y,closest){
             top*=-1;
 
         if(!(y<1&&y>-1) && !(x<1&&x>-1)){
-            temp.offset({top: temp.offset().top + top, left: temp.offset().left + left});
+            temp.offset({top: temp.offset().top + top + "px", left: temp.offset().left + left + "px"});
             x+=-left;
             y+=-top;
         }
@@ -111,8 +133,20 @@ function doTimer(obj,x,y,closest){
         if ((y<1&&y>-1) && (x<1&&x>-1)){
             clearInterval(timer);
             zergHit(closest,temp); 
-        }     
-    }, 20);
+        }
+        // ada = false;
+        // // console.log("walk still running");
+        for(let i=0;i<targets.length;i++){
+            if(targets.eq(i).attr("id")==closest.attr("id")){
+                ada = true;
+            }    
+        }
+        if (ada == false){
+            // console.log("udah ga ada objeknya!");
+            clearInterval(timer);
+            checkClosest();
+        }
+    }, 16);
 }
 
 function zergHit(obj,zerg){
@@ -120,6 +154,7 @@ function zergHit(obj,zerg){
     health.css("visibility","visible");
 
     var hitter = setInterval(function(){
+        // console.log("hit still running");
         health.attr("health",health.attr("health")-1);
         health.css("width",($(health).attr("health")*2+"px"));
         
@@ -135,12 +170,13 @@ function zergHit(obj,zerg){
             if(targets.length!=0){
                 var closest = targets.closestToOffset(zerg.offset().top,zerg.offset().left);
                 closest[0].css('background-color','#eee');
-                doTimer(zerg,closest[1],closest[2],closest[0]);
+                walk(zerg,closest[1],closest[2],closest[0]);
             }
             else{
                 //TODO validasi kelar
-                console.log("done");
+                // console.log("done");
                 isDoneRushing = true;
+                $("#left").fadeIn();
             }
              
         }
@@ -164,14 +200,17 @@ $(document).ready(function(){
             $(this).fadeOut();
         }
         else if($(this).attr("health")<60){
-            $(this).children().eq(0).css("background-color","red");
-            $(this).children().eq(0).css("width","5px");
+            $(this).children().eq(0).css({
+                "background-color":"red",
+                "width":"5px"
+            });
         }
         else if($(this).attr("health")<70){
-            $(this).children().eq(0).css("background-color","orange");
-            $(this).children().eq(0).css("width","10px");
+            $(this).children().eq(0).css({
+                "background-color":"orange",
+                "width":"10px"
+            });
         }
     });
-
 });
 
